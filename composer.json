@@ -1,0 +1,33 @@
+{
+    "name": "eliepse/argile-honeypot",
+    "description": "Honeypot protecting forms from robot spam, made for the Argile Framework",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Élie Meignan",
+            "email": "contact@eliepse.fr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "psr/http-message": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "slim/psr7": "^1.2"
+    },
+    "require-dev" : {
+        "phpstan/phpstan": "^0.12"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Eliepse\\Argile\\Honeypot\\" : "src"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@phpstan"
+        ],
+        "phpstan": "phpstan analyse -c phpstan.neon src"
+    }
+}
