@@ -2,6 +2,7 @@
 
 namespace Eliepse\Argile\Honeypot\Http\Middleware;
 
+use Eliepse\Argile\Honeypot\Honeypot;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
@@ -10,21 +11,16 @@ use Slim\Psr7\Response;
 
 class HoneypotResponseMiddleware implements MiddlewareInterface
 {
-	private string $key = '';
-	private array $names = [];
+	private Honeypot $honeypot;
 
 
 	public function process(Request $request, RequestHandler $handler): ResponseInterface
 	{
 		$content = (string)$handler->handle($request)->getBody();
 
-		$this->key = bin2hex(random_bytes(5));
-
+		$this->honeypot = Honeypot::loadOrNew();
 		$content = $this->handleHoneypots($content);
-
-		$_SESSION['honeypot_key'] = $this->key;
-		$_SESSION['honeypot_names'] = $this->names;
-		$_SESSION['honeypot_generated_at'] = time();
+		Honeypot::store($this->honeypot);
 
 		$response = new Response();
 		$response->getBody()->write($content);
@@ -41,16 +37,10 @@ class HoneypotResponseMiddleware implements MiddlewareInterface
 
 	private function processHtmlInput(string $html_input, string $name): string
 	{
-		$this->names[] = $name;
+		$hash = $this->honeypot->addInput($name);
 		preg_match('/type="([a-zA-Z]+)"/', $html_input, $matches);
 		$type = $matches[1] ?? 'text';
 		$honeypot = "<input class=\"onipat\" type=\"$type\" name=\"$name\" autocomplete=\"off\" tabindex=\"-1\">";
-		return "$honeypot\n" . preg_replace("/honeypot:$name/", $this->hashName($name), $html_input);
-	}
-
-
-	private function hashName(string $name): string
-	{
-		return md5($name . $this->key);
+		return "$honeypot\n" . preg_replace("/honeypot:$name/", $hash, $html_input);
 	}
 }

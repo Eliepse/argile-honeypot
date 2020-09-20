@@ -18,17 +18,25 @@
         "slim/psr7": "^1.2"
     },
     "require-dev" : {
-        "phpstan/phpstan": "^0.12"
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^9.3"
     },
     "autoload" : {
         "psr-4" : {
             "Eliepse\\Argile\\Honeypot\\" : "src"
         }
     },
+    "autoload-dev" : {
+        "psr-4" : {
+            "Tests\\" : "tests"
+        }
+    },
     "scripts": {
         "test": [
-            "@phpstan"
+            "@phpstan",
+            "@phpunit"
         ],
-        "phpstan": "phpstan analyse -c phpstan.neon src"
+        "phpstan": "phpstan analyse -c phpstan.neon src --ansi",
+        "phpunit": "phpunit tests"
     }
 }
