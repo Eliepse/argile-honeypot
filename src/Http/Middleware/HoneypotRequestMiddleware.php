@@ -12,6 +12,12 @@ use Slim\Psr7\Response;
 class HoneypotRequestMiddleware implements MiddlewareInterface
 {
 	private Honeypot $honeypot;
+	private int $cooldown;
+
+
+	public function __construct(int $cooldown = 5) {
+		$this->cooldown = $cooldown;
+	}
 
 
 	public function process(Request $request, RequestHandler $handler): ResponseInterface
@@ -28,7 +34,7 @@ class HoneypotRequestMiddleware implements MiddlewareInterface
 		$inputs = $request->getParsedBody();
 		$inputs = is_array($inputs) ? array_filter($inputs) : [];
 
-		if (! $this->honeypot->isCooldownPassed())
+		if (! $this->honeypot->isCooldownPassed($this->cooldown))
 			return new Response(403);
 
 		if ($this->areHoneypotsFilled($inputs))

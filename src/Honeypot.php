@@ -49,9 +49,9 @@ final class Honeypot
 	}
 
 
-	public function isCooldownPassed(): bool
+	public function isCooldownPassed(int $cooldown = null): bool
 	{
-		return $this->generated_at + $this->cooldown < time();
+		return $this->generated_at + ($cooldown ?? $this->cooldown) < time();
 	}
 
 
