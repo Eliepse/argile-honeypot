@@ -19,7 +19,7 @@ than a certain delay (default to 5 seconds).
 ## How to use it?
 First install the package by adding it to your composer.json or requiring it through the command line.
 ```shell script
-$ composer require eliepse/argile-honeypot
+composer require eliepse/argile-honeypot
 ```
 You also have to add the css class "onipat" to hide the fake inputs. A css file is available at 
 `/resources/css/honeypot.css`

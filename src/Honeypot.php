@@ -16,7 +16,6 @@ final class Honeypot
 	public function __construct(array $names = [], int $cooldown = 5)
 	{
 		$this->token = self::generateToken();
-		/** @phpstan-ignore-next-line */
 		$this->manifest = array_combine(array_map(fn($name) => $this->getHash($name), $names), $names);
 		$this->cooldown = $cooldown;
 		$this->generated_at = time();
