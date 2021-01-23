@@ -16,9 +16,16 @@ class HoneypotResponseMiddleware implements MiddlewareInterface
 
 	public function process(Request $request, RequestHandler $handler): ResponseInterface
 	{
+		$this->honeypot = Honeypot::loadOrNew();
+
+		// If the honeypot has never been initialized before, we create a new instance
+		// that can be used to make the first view compilation.
+		if (! Honeypot::isInSession()) {
+			Honeypot::store($this->honeypot);
+		}
+
 		$content = (string)$handler->handle($request)->getBody();
 
-		$this->honeypot = Honeypot::loadOrNew();
 		$content = $this->handleHoneypots($content);
 		Honeypot::store($this->honeypot);
 
